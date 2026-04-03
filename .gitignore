@@ -1,0 +1,11 @@
+# Token files
+zerodha_enctoken.txt
+*.txt
+
+# Cache
+__pycache__/
+*.pyc
+instruments_cache.csv
+
+# Environment
+.env
