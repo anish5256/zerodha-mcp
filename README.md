@@ -13,6 +13,8 @@ Query your Zerodha trading account via MCP (Model Context Protocol). Works with 
 | `get_current_pnl` | Combined P&L summary |
 | `get_instrument_ltp` | Last traded price of any instrument |
 | `get_instrument_ohlc` | OHLC data of any instrument |
+| `get_pnl_summary` | Historical P&L summary for a date range (max 3 months) |
+| `get_pnl_heatmap` | Daily P&L breakdown for a date range (max 3 months) |
 
 ## Installation
 
@@ -159,12 +161,14 @@ Once configured, ask your AI assistant:
 - "How much funds do I have available?"
 - "What's the LTP of RELIANCE?"
 - "Get OHLC for NIFTY 50"
+- "What was my F&O profit in 2024?"
+- "Show me my daily P&L for last month"
 
 ## Security Notes
 
 - Your credentials are stored locally in your MCP config file
 - Credentials are never sent to the AI model, only used server-side
-- The enctoken is cached locally in `zerodha_enctoken.txt` (gitignored)
+- Tokens are cached locally in `zerodha_enctoken.txt` and `zerodha_console_token.txt` (gitignored)
 - Each user must configure their own credentials on their own machine
 
 ## License

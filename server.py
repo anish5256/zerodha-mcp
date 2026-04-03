@@ -5,7 +5,10 @@ Zerodha MCP Server - Query account data via Model Context Protocol
 
 import json
 from mcp.server.fastmcp import FastMCP
-from client import get_orders, get_positions, get_holdings, get_funds, get_ltp, get_ohlc
+from client import (
+    get_orders, get_positions, get_holdings, get_funds, get_ltp, get_ohlc,
+    get_pnl_summary as _get_pnl_summary, get_pnl_heatmap as _get_pnl_heatmap
+)
 
 mcp = FastMCP("zerodha")
 
@@ -121,6 +124,58 @@ def get_instrument_ohlc(symbol: str, exchange: str = "NSE") -> dict:
         "exchange": exchange,
         **ohlc,
     }
+
+
+@mcp.tool()
+def get_pnl_summary(from_date: str, to_date: str, segment: str = "FO") -> dict:
+    """
+    Get realized PnL summary for a date range from Zerodha Console.
+
+    Args:
+        from_date: Start date in "YYYY-MM-DD" format
+        to_date: End date in "YYYY-MM-DD" format
+        segment: Market segment - "FO" for F&O, "EQ" for Equity (default: FO)
+
+    Returns:
+        realized_profit: Total realized profit/loss
+        unrealized_profit: Unrealized profit/loss (open positions)
+        total_charges: Total taxes and charges
+        net_pnl: Net P&L after charges (realized - charges)
+        raw: Full API response for detailed breakdown
+
+    Note:
+        Maximum date range is 3 months. For longer periods, make multiple requests.
+
+    Examples:
+        get_pnl_summary("2026-04-01", "2026-04-03", "FO")  # F&O this month
+        get_pnl_summary("2026-01-01", "2026-03-31", "EQ")  # Equity Q1
+    """
+    return _get_pnl_summary(from_date, to_date, segment)
+
+
+@mcp.tool()
+def get_pnl_heatmap(from_date: str, to_date: str, segment: str = "FO") -> dict:
+    """
+    Get daily PnL heatmap for a date range from Zerodha Console.
+    Shows day-by-day breakdown of realized profit/loss.
+
+    Args:
+        from_date: Start date in "YYYY-MM-DD" format
+        to_date: End date in "YYYY-MM-DD" format
+        segment: Market segment - "FO" for F&O, "EQ" for Equity (default: FO)
+
+    Returns:
+        Daily PnL data organized by date, useful for identifying
+        profitable/losing days and patterns.
+
+    Note:
+        Maximum date range is 3 months. For longer periods, make multiple requests.
+
+    Examples:
+        get_pnl_heatmap("2026-04-01", "2026-04-03", "FO")
+        get_pnl_heatmap("2026-03-01", "2026-03-31", "EQ")
+    """
+    return _get_pnl_heatmap(from_date, to_date, segment)
 
 
 if __name__ == "__main__":
